@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bank DApp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=JetBrains+Mono:wght@400;700&family=Sarabun:wght@400;600&display=swap" rel="stylesheet">
+<style>
+
+  @import url("https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap");
+
+  :root {
+    color-scheme: dark;
+    --primary: #a99aff;
+    --primary-dark: #d4caff;
+    --green: #52e3b6;
+    --red: #ff9eae;
+    --orange: #ffcf99;
+    --text: #f3f2ff;
+    --muted: #a5aac5;
+    --border: rgba(255, 255, 255, .1);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    max-width: none;
+    margin: 0;
+    min-height: 100vh;
+    padding: 48px 20px;
+    font-family: "Sarabun", sans-serif;
+    color: var(--text);
+    background:
+      radial-gradient(ellipse at 15% 5%, #40316b 0%, transparent 45%),
+      radial-gradient(ellipse at 95% 85%, #173b47 0%, transparent 40%),
+      #101321;
+    line-height: 1.6;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, .025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, .025) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: linear-gradient(#000, transparent 90%);
+  }
+
+  .app {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    animation: appear .6s ease both;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  header::before {
+    content: "Ξ";
+    display: grid;
+    place-items: center;
+    width: 58px;
+    height: 58px;
+    margin: 0 auto 16px;
+    border: 1px solid rgba(196, 179, 255, .4);
+    border-radius: 19px;
+    background: linear-gradient(145deg, #9a7bff, #6046ba);
+    box-shadow: 0 8px 35px rgba(133, 91, 255, .3);
+    color: white;
+    font-size: 38px;
+    line-height: 1;
+  }
+
+  header h1 {
+    margin: 0;
+    color: #fff;
+    font-family: "Sarabun", sans-serif;
+    font-size: 34px;
+    font-weight: 800;
+    letter-spacing: -1px;
+  }
+
+  header p {
+    margin: 7px 0 0;
+    color: var(--muted);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: .3px;
+  }
+
+  .card {
+    padding: 24px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, .075),
+      rgba(255, 255, 255, .035)
+    );
+    box-shadow: 0 12px 35px rgba(0, 0, 0, .12);
+    backdrop-filter: blur(18px);
+  }
+
+  .card h3 {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin: 0 0 18px;
+    color: #d4d5e8;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+  }
+
+  .card h3::before {
+    content: "";
+    width: 5px;
+    height: 14px;
+    border-radius: 4px;
+    background: var(--primary);
+  }
+
+  .student {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 19px 22px;
+    background: rgba(177, 154, 255, .08);
+  }
+
+  .avatar {
+    display: grid;
+    place-items: center;
+    flex: 0 0 48px;
+    width: 48px;
+    height: 48px;
+    border: 1px solid rgba(177, 154, 255, .25);
+    border-radius: 16px;
+    background: rgba(177, 154, 255, .12);
+    font-size: 24px;
+  }
+
+  .student > div:last-child {
+    min-width: 0;
+  }
+
+  .student b {
+    display: block;
+    margin-bottom: 3px;
+    font-size: 16px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+
+  .student span {
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  #sid {
+    font-family: "JetBrains Mono", monospace;
+    color: #c3b8ee;
+  }
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 50px;
+    margin: 0;
+    padding: 13px 16px;
+    border: 1px solid transparent;
+    border-radius: 13px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.4;
+    cursor: pointer;
+    transition:
+      transform .2s ease,
+      background .2s ease,
+      box-shadow .2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button:hover {
+    transform: translateY(-2px);
+    filter: none;
+  }
+
+  button:active {
+    transform: translateY(0);
+  }
+
+  button:focus-visible {
+    outline: 3px solid #d4caff;
+    outline-offset: 4px;
+  }
+
+  button:disabled {
+    opacity: .5;
+    cursor: wait;
+    transform: none;
+  }
+
+  #connectBtn {
+    width: 100%;
+    color: #302219;
+    background: linear-gradient(110deg, #ffdbad, #ffbd82);
+    box-shadow: 0 5px 20px rgba(255, 183, 116, .12);
+  }
+
+  #connectBtn:hover {
+    box-shadow: 0 8px 28px rgba(255, 183, 116, .22);
+  }
+
+  #account {
+    margin-top: 15px;
+    padding: 10px 12px;
+    border: 1px dashed rgba(255, 255, 255, .12);
+    border-radius: 10px;
+    color: var(--muted);
+    background: rgba(0, 0, 0, .12);
+    font-size: 12px;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+
+  input {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    height: 57px;
+    margin: 0 0 16px;
+    padding: 15px 17px;
+    border: 1px solid rgba(255, 255, 255, .12);
+    border-radius: 13px;
+    outline: none;
+    background: rgba(0, 0, 0, .2);
+    color: #fff;
+    font-family: inherit;
+    font-size: 16px;
+    transition: border-color .2s, box-shadow .2s;
+  }
+
+  input::placeholder {
+    color: #858ba8;
+  }
+
+  input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(169, 154, 255, .12);
+  }
+
+  .row {
+    display: flex;
+    gap: 12px;
+  }
+
+  .row button {
+    flex: 1;
+    min-width: 0;
+  }
+
+  #depositBtn {
+    color: var(--green);
+    border-color: rgba(82, 227, 182, .2);
+    background: rgba(82, 227, 182, .1);
+  }
+
+  #depositBtn:hover {
+    background: rgba(82, 227, 182, .18);
+  }
+
+  #withdrawBtn {
+    color: var(--red);
+    border-color: rgba(255, 158, 174, .2);
+    background: rgba(255, 158, 174, .1);
+  }
+
+  #withdrawBtn:hover {
+    background: rgba(255, 158, 174, .18);
+  }
+
+  .card:has(#balance) {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    border-color: rgba(169, 154, 255, .24);
+    background:
+      radial-gradient(
+        ellipse at top right,
+        rgba(147, 110, 255, .18),
+        transparent 70%
+      ),
+      rgba(255, 255, 255, .04);
+  }
+
+  .card:has(#balance) h3 {
+    order: 0;
+    margin-bottom: 5px;
+  }
+
+  #balance {
+    order: 1;
+    margin: 12px 0 24px;
+    color: #e7e0ff;
+    font-family: "JetBrains Mono", monospace;
+    font-size: clamp(25px, 7vw, 38px);
+    font-weight: 700;
+    letter-spacing: -1.5px;
+    line-height: 1.4;
+    text-align: left;
+    overflow-wrap: anywhere;
+  }
+
+  #balanceBtn {
+    order: 2;
+    width: 100%;
+    color: #211a3d;
+    background: linear-gradient(110deg, #c8b9ff, #a99aff);
+    box-shadow: 0 5px 20px rgba(169, 154, 255, .12);
+  }
+
+  #balanceBtn:hover {
+    box-shadow: 0 8px 28px rgba(169, 154, 255, .25);
+  }
+
+  #status {
+    margin-top: 18px;
+    padding: 14px 18px;
+    border: 1px solid rgba(169, 154, 255, .2);
+    border-radius: 13px;
+    background: rgba(169, 154, 255, .08);
+    color: #e0d8ff;
+    font-size: 13px;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+
+  #status:empty {
+    display: none;
+  }
+
+  .app::after {
+    content: "BANK DAPP  /  ETHEREUM";
+    display: block;
+    margin-top: 26px;
+    color: #858ba8;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-align: center;
+  }
+
+  @keyframes appear {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 480px) {
+    body {
+      padding: 28px 16px;
+    }
+
+    header {
+      margin-bottom: 24px;
+    }
+
+    .card {
+      padding: 20px;
+      border-radius: 19px;
+    }
+
+    .student {
+      padding: 17px;
+    }
+
+    .student b {
+      font-size: 14px;
+    }
+
+    header p {
+      font-size: 9px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>Bank DApp</h1>
+    <p>// decentralized banking on ethereum</p>
+  </header>
+
+  <div class="card student">
+    <div class="avatar">🎓</div>
+    <div>
+      <b id="sname"></b>
+      <span>รหัสนักศึกษา: <span id="sid"></span></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Wallet</h3>
+    <button id="connectBtn">🦊 เชื่อมต่อ MetaMask</button>
+    <div id="account">ยังไม่ได้เชื่อมต่อ</div>
+  </div>
+
+  <div class="card">
+    <h3>Deposit / Withdraw</h3>
+    <input id="amount" placeholder="จำนวน ETH เช่น 0.01" inputmode="decimal">
+    <div class="row">
+      <button id="depositBtn">⬇ Deposit</button>
+      <button id="withdrawBtn">⬆ Withdraw</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>My Balance</h3>
+    <button id="balanceBtn">🔍 CheckBalance</button>
+    <div id="balance">-</div>
+  </div>
+
+  <div id="status"></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+<script>
+const CONTRACT_ADDRESS = "0xf27ce15d495F9fCA1226Fa82DB74A1A643659d73";
+const STUDENT_ID = "66050731";
+const STUDENT_NAME = "นาย อชิรยุ นวลสกุลวัฒน์";
+const ABI = [
+  "function deposit() payable",
+  "function withdraw(uint256 amount)",
+  "function checkBlance() view returns (uint256)"
+];
+
+document.getElementById("sid").textContent = STUDENT_ID;
+document.getElementById("sname").textContent = STUDENT_NAME;
+
+let signer, contract;
+const $ = id => document.getElementById(id);
+const setStatus = t => $("status").textContent = t;
+
+$("connectBtn").onclick = async () => {
+  if (!window.ethereum) return alert("กรุณาติดตั้ง MetaMask");
+  const provider = new ethers.BrowserProvider(window.ethereum);
+  await provider.send("eth_requestAccounts", []);
+  signer = await provider.getSigner();
+  contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+  $("account").textContent = "บัญชี: " + await signer.getAddress();
+};
+
+async function run(fn, msg) {
+  if (!contract) return alert("กรุณาเชื่อมต่อ MetaMask ก่อน");
+  try {
+    setStatus("กำลังทำรายการ...");
+    const tx = await fn();
+    await tx.wait();
+    setStatus(msg + " สำเร็จ");
+  } catch (e) { setStatus("ผิดพลาด: " + (e.reason || e.shortMessage || e.message)); }
+}
+
+$("depositBtn").onclick = () =>
+  run(() => contract.deposit({ value: ethers.parseEther($("amount").value) }), "Deposit");
+
+$("withdrawBtn").onclick = () =>
+  run(() => contract.withdraw(ethers.parseEther($("amount").value)), "Withdraw");
+
+$("balanceBtn").onclick = async () => {
+  if (!contract) return alert("กรุณาเชื่อมต่อ MetaMask ก่อน");
+  const b = await contract.checkBlance();
+  $("balance").textContent = ethers.formatEther(b) + " ETH";
+};
+</script>
+</body>
+</html>
